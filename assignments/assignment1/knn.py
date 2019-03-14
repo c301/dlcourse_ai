@@ -55,7 +55,9 @@ class KNN:
         for i_test in range(num_test):
             for i_train in range(num_train):
                 # TODO: Fill dists[i_test][i_train]
-                pass
+                dists[i_test][i_train] = np.sum(np.abs(X[i_test] - self.train_X[i_train]))
+
+        return dists
 
     def compute_distances_one_loop(self, X):
         '''
@@ -75,7 +77,9 @@ class KNN:
         for i_test in range(num_test):
             # TODO: Fill the whole row of dists[i_test]
             # without additional loops or list comprehensions
-            pass
+            dists[i_test] = np.sum(np.abs(X[i_test] - self.train_X), axis = 1)
+
+        return dists
 
     def compute_distances_no_loops(self, X):
         '''
@@ -89,12 +93,19 @@ class KNN:
         dists, np array (num_test_samples, num_train_samples) - array
            with distances between each test and each train sample
         '''
-        num_train = self.train_X.shape[0]
-        num_test = X.shape[0]
+        # num_train = self.train_X.shape[0]
+        # num_test = X.shape[0]
         # Using float32 to to save memory - the default is float64
-        dists = np.zeros((num_test, num_train), np.float32)
+        # dists = np.zeros((num_test, num_train), np.float32)
         # TODO: Implement computing all distances with no loops!
-        pass
+
+        # print(X.shape)
+        # print(X)
+        # print('--')
+        # print(np.reshape(X, (X.shape[0], 1, X.shape[1])))
+        # print('--')
+
+        return np.sum(np.abs(np.reshape(X, (X.shape[0], 1, X.shape[1])) - self.train_X), axis = 2)
 
     def predict_labels_binary(self, dists):
         '''
