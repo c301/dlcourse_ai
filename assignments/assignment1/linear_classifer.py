@@ -13,8 +13,13 @@ def softmax(predictions):
       probs, np array of the same shape as predictions - 
         probability for every class, 0..1
     '''
-    predictions -= np.max(predictions)
-    sm = [np.exp(prediction)/np.sum(np.exp(predictions)) for prediction in predictions]
+
+    # exp_scores = np.exp(predictions - np.max(predictions, axis=0, keepdims=True))
+    # probs = exp_scores/np.sum(exp_scores, axis=0, keepdims=True)
+
+    work_predictions = predictions.copy()
+    work_predictions -= np.max(work_predictions)
+    sm = np.array([np.exp(prediction)/np.sum(np.exp(work_predictions)) for prediction in work_predictions])
 
     return sm
 
@@ -32,8 +37,7 @@ def cross_entropy_loss(probs, target_index):
     Returns:
       loss: single value
     '''
-    # TODO implement cross-entropy
-    return -np.log(probs)
+    return -np.log(probs[target_index])
 
 
 def softmax_with_cross_entropy(predictions, target_index):
@@ -51,9 +55,50 @@ def softmax_with_cross_entropy(predictions, target_index):
       loss, single value - cross-entropy loss
       dprediction, np array same shape as predictions - gradient of predictions by loss value
     '''
-    sm = softmax(predictions)
+    print(predictions)
+    W = predictions.copy()
+    if predictions.ndim <= 1:
+        W = W.reshape(1, predictions.shape[0])
 
-    return loss, dprediction
+    Y = target_index.copy()
+    if target_index.ndim == 0:
+        Y = Y.reshape(1, )
+
+    probs = np.apply_along_axis(softmax, 1, W)
+    print(W, Y)
+
+    #TODO:correct this
+    loss = np.apply_along_axis(cross_entropy_loss, 1, probs, Y)
+
+    dscores = probs.copy()
+
+    print(np.arange(W.shape[0]), Y)
+    dscores[np.arange(W.shape[0]), Y] -= 1
+    print(dscores)
+
+    dW = dscores
+    # print(dW, dscores, W.T)
+
+    return loss, dW
+
+
+    # w = predictions.copy()
+    # x = np.zeros(w.shape)
+    # x[target_index] = 1
+    # sm = softmax(w) - x
+
+    # print('loss, w, x, sm', loss, w, x, sm)
+    # # print('softmax(predictions)', softmax(w * x))
+    # # print('softmax(predictions) - x', softmax(w * x) - x)
+    # # print('x, x.T', x, x.T)
+
+    # reg = 0.5
+
+    # dprediction =  w.T.dot( sm )#  + reg * w
+    # print('dprediction', dprediction)
+    # print('--------')
+
+    # return loss, dprediction
 
 
 def l2_regularization(W, reg_strength):
