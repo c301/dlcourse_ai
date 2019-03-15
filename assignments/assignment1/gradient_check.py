@@ -30,10 +30,7 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
-        # print("it", it)
-        # print(ix)
         analytic_grad_at_ix = analytic_grad[ix]
-        # print(x[ix])
 
         plus_delta = x.copy()
         minus_delta = x.copy()
@@ -42,14 +39,9 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
         minus_delta[ix] -= delta
 
         f_delta_plus = f( plus_delta )[0]
-        # print(f_delta_plus)
         f_delta_minus = f( minus_delta )[0]
-        # print(f_delta_minus)
 
         derivative = ( f_delta_plus - f_delta_minus ) / ( 2 * delta )
-        # print(derivative)
-        # print(derivative/( delta * delta ) )
-        # numeric_grad_at_ix = ( f_delta_plus - f_delta_minus ) / delta * derivative
         numeric_grad_at_ix = derivative
 
         # TODO compute value of numeric gradient of f to idx
@@ -61,7 +53,3 @@ def check_gradient(f, x, delta=1e-5, tol = 1e-4):
 
     print("Gradient check passed!")
     return True
-
-        
-
-        
