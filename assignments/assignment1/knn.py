@@ -105,6 +105,23 @@ class KNN:
         # print(np.reshape(X, (X.shape[0], 1, X.shape[1])))
         # print('--')
 
+        # X_ext = np.expand_dims(X, 2)
+
+        # #print("X_ext:", X_ext.shape)
+
+        # X_ext = np.tile(X_ext, self.train_X.shape[0])
+
+        # #print("X_ext tile:", X_ext.shape)
+
+        # X_ext = np.transpose(X_ext, (0, 2, 1))
+
+        # #print("X_ext transpose:", X_ext.shape)
+        # X_ext = np.abs(X_ext - self.train_X)
+
+        # #print("X_ext abs:", X_ext.shape)
+        # #print("out: ", np.sum(X_ext, axis=2).shape)
+
+        # return np.sum(X_ext, axis=2)
         return np.sum(np.abs(np.reshape(X, (X.shape[0], 1, X.shape[1])) - self.train_X), axis = 2)
 
     def predict_labels_binary(self, dists):
