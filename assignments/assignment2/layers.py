@@ -51,14 +51,15 @@ class Param:
 
 
 class ReLULayer:
+    last_input = None
     def __init__(self):
         pass
 
     def forward(self, X):
-        # TODO: Implement forward pass
         # Hint: you'll need to save some information about X
         # to use it later in the backward pass
-        raise Exception("Not implemented!")
+        self.last_input = X
+        return np.maximum(X, 0)
 
     def backward(self, d_out):
         """
